@@ -2,22 +2,24 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-// const cookieParser = require("cookie-parser");
+
 const cors = require("cors");
 
 //Routes
-const auth = require("./routes/adduser");
-const order = require("./routes/orderRoute");
-
+const registerRoute = require("./routes/registerRoute");
+const orderRoute = require("./routes/orderRoute");
+const loginRoute = require("./routes/loginRoute");
 // Middeleware
-app.use(cors({ credentials: true }));
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.json());
 
 dotenv.config();
 const PORT = process.env.PORTID || 5000;
 
-app.use("/order", order);
-app.use("/account", auth);
+//Routes
+app.use("/order", orderRoute);
+app.use("/account", registerRoute);
+app.use("/account", loginRoute);
 
 app.get("/", (req, res) => {
     res.send("main index is Working");
@@ -32,12 +34,4 @@ mongoose.connect(
     }
 );
 
-//set up routes
-
-// app.use("/auth", require("./routes/userRouter"));
-// app.use("/", require("./routes/addProductRouter"));
-// app.use("/", require("./routes/customerRouter"));
-// app.use("/", require("./routes/test"));
-
-// Connect to server
 app.listen(PORT, () => console.log(`Server started at ${PORT}`));
