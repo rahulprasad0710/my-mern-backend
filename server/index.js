@@ -2,16 +2,19 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-
 const cors = require("cors");
+
+// Middeleware
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 //Routes
 const registerRoute = require("./routes/registerRoute");
 const orderRoute = require("./routes/orderRoute");
 const loginRoute = require("./routes/loginRoute");
-// Middeleware
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
-app.use(express.json());
+const profileRoute = require("./routes/profileRoute");
+const adminRoute = require("./routes/adminRoute.js");
 
 dotenv.config();
 const PORT = process.env.PORTID || 5000;
@@ -20,6 +23,8 @@ const PORT = process.env.PORTID || 5000;
 app.use("/order", orderRoute);
 app.use("/account", registerRoute);
 app.use("/account", loginRoute);
+app.use("/account", profileRoute);
+app.use("/admin", adminRoute);
 
 app.get("/", (req, res) => {
     res.send("main index is Working");
@@ -27,7 +32,11 @@ app.get("/", (req, res) => {
 
 mongoose.connect(
     process.env.MDB_CONNECT,
-    { useNewUrlParser: true, useUnifiedTopology: true },
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useFindAndModify: false,
+    },
     (err) => {
         if (err) return console.error(err);
         console.log("connect to MongoDb");
