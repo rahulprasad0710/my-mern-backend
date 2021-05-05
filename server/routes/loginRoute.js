@@ -3,6 +3,16 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/userModel");
+
+router.get("/logout", (req, res) => {
+    res.status(200)
+        .cookie("tokenID", "", {
+            httpOnly: true,
+            expires: new Date(0),
+        })
+        .json("logout sucessfully");
+});
+
 router.post("/login", async (req, res) => {
     try {
         const { password, mobileNo } = req.body;

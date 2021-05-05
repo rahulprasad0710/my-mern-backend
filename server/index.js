@@ -3,11 +3,12 @@ const app = express();
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
-
+const cookieParser = require("cookie-parser");
 // Middeleware
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
+app.use(cookieParser());
 
 //Routes
 const registerRoute = require("./routes/registerRoute");
@@ -23,7 +24,7 @@ const PORT = process.env.PORTID || 5000;
 app.use("/order", orderRoute);
 app.use("/account", registerRoute);
 app.use("/account", loginRoute);
-app.use("/account", profileRoute);
+app.use("/profile", profileRoute);
 app.use("/admin", adminRoute);
 
 app.get("/", (req, res) => {
