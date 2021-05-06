@@ -6,6 +6,26 @@ const User = require("../models/userModel");
 
 //my-info
 
+router.post("/bookmark", async (req, res) => {
+    try {
+        const existingUserInfo = await User.findOne(
+            { _id: verifiedToken.user },
+            (error, userInfo) => {
+                try {
+                    if (error) console.log(error);
+                    console.log("User Info", userInfo);
+                    return userInfo;
+                } catch (error) {
+                    throw error;
+                }
+            }
+        );
+
+        res.status(200).json(existingUserInfo);
+    } catch (error) {
+        res.status(400);
+    }
+});
 router.get("/myinfo", async (req, res) => {
     try {
         const tokenID = req.cookies.tokenID;
@@ -28,6 +48,32 @@ router.get("/myinfo", async (req, res) => {
         );
 
         res.status(200).json(existingUserInfo);
+    } catch (error) {
+        res.status(400);
+    }
+});
+
+router.put("/myinfo", async (req, res) => {
+    try {
+        const { id, values } = req.body;
+        const { firstName, lastName, email, level } = values;
+
+        const updatedUser = await User.findByIdAndUpdate(
+            id,
+            {
+                regEmail: email,
+                firstName,
+                lastName,
+                level,
+            },
+            {
+                new: true,
+            }
+        );
+
+        console.log(updatedUser);
+
+        res.status(200).json("from update");
     } catch (error) {
         res.status(400);
     }

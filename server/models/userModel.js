@@ -16,8 +16,8 @@ const userSchema = new mongoose.Schema(
             unique: true,
         },
 
-        gender: {
-            type: Boolean,
+        level: {
+            type: String,
         },
 
         passwordHash: {
@@ -34,6 +34,14 @@ const userSchema = new mongoose.Schema(
                 address: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: "Address",
+                },
+            },
+        ],
+        bookmarks: [
+            {
+                books: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "Book",
                 },
             },
         ],

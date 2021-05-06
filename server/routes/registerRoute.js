@@ -7,28 +7,44 @@ const User = require("../models/userModel");
 
 router.post("/register", async (req, res) => {
     try {
-        const { email, password, mobileNo } = req.body;
-        if (!email || !password) {
+        const {
+            email,
+            password,
+            mobileNo,
+            firstName,
+            lastName,
+            passwordAgain,
+            level,
+        } = req.body;
+        if (
+            (!email,
+            !password ||
+                !mobileNo ||
+                !firstName ||
+                !lastName ||
+                !passwordAgain ||
+                !email)
+        ) {
             return res
                 .status(401)
-                .json({ errorMsg: "please enter all the fields" });
+                .json({ message: "please enter all the fields" });
         }
         if (password.length < 8) {
             return res.status(401).json({
-                errorMsg: "Password should be of atleast 8 characters",
+                message: "Password should be of atleast 8 characters",
             });
         }
 
-        // if (password !== passwordAgain) {
-        //     return res.status(401).json({ errorMsg: "Passwords donot match" });
-        // }
+        if (password !== passwordAgain) {
+            return res.status(401).json({ message: "Passwords donot match" });
+        }
 
         //Checking if account with this email already exists
 
         const existingUser = await User.findOne({ mobileNo: mobileNo });
         if (existingUser) {
             return res.status(400).json({
-                errorMsg: "An account with this mobile number already exists",
+                message: "An account with this mobile number already exists",
             });
         }
 
@@ -40,6 +56,9 @@ router.post("/register", async (req, res) => {
             mobileNo: mobileNo,
             regEmail: email,
             passwordHash: hashPassword,
+            firstName,
+            lastName,
+            level,
         });
 
         try {
@@ -55,7 +74,7 @@ router.post("/register", async (req, res) => {
                 .cookie("tokenID", token, {
                     httpOnly: true,
                 })
-                .json({ okMsg: " Your new account is created" });
+                .json({ message: " Your new account is created" });
         } catch (error) {
             console.error("DB_erroR:", error);
             res.status(400).send("Error");
