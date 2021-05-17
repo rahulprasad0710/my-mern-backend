@@ -1,4 +1,31 @@
 const mongoose = require("mongoose");
+
+const addressSchema = new mongoose.Schema(
+    {
+        addressName: {
+            type: String,
+            require: true,
+        },
+        ward: {
+            type: Number,
+        },
+        tole: {
+            type: String,
+        },
+        city: {
+            type: String,
+        },
+        district: {
+            type: String,
+        },
+    },
+    {
+        timestamps: true,
+    }
+);
+
+const Address = mongoose.model("address", addressSchema);
+
 const userSchema = new mongoose.Schema(
     {
         firstName: {
@@ -29,20 +56,11 @@ const userSchema = new mongoose.Schema(
             type: String,
         },
 
-        addresses: [
-            {
-                address: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: "Address",
-                },
-            },
-        ],
+        addresses: [addressSchema],
         bookmarks: [
             {
-                books: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: "Book",
-                },
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Book",
             },
         ],
     },

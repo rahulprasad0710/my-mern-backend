@@ -1,22 +1,17 @@
 const mongoose = require("mongoose");
+
 const orderSchema = new mongoose.Schema(
     {
-        customer: {
+        user: {
             type: mongoose.Schema.Types.ObjectId,
             require: true,
             ref: "user",
         },
-        booksItems: [
+        orderItems: [
             {
-                name: { type: String, require: true },
-                quantity: { type: Number, require: true },
-                image: { type: String, require: true },
-                price: { type: Number, require: true },
-                book: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    require: true,
-                    ref: "Book",
-                },
+                type: mongoose.Schema.Types.ObjectId,
+                require: true,
+                ref: "OrderItem",
             },
         ],
 
@@ -30,37 +25,38 @@ const orderSchema = new mongoose.Schema(
             require: true,
             default: false,
         },
-        paidAt: {
-            type: Date,
-        },
-        isDelivered: {
-            type: String,
-        },
-
-        taxPrice: {
-            type: Number,
-            require: true,
-        },
-        devileryCharge: {
-            type: Number,
-        },
-        discount: {
-            type: Number,
-        },
-        totalPriceWithoutTax: {
-            type: Number,
-            require: true,
-        },
-        totalPriceWithTax: {
-            type: Number,
-            require: true,
-        },
     },
     {
         timestamps: true,
     }
 );
 
-const Order = mongoose.model("order", orderSchema);
+const Order = mongoose.model("Order", orderSchema);
 
 module.exports = Order;
+
+// paidAt: {
+//             type: Date,
+//         },
+//         isDelivered: {
+//             type: String,
+//         },
+
+//         taxPrice: {
+//             type: Number,
+//             require: true,
+//         },
+//         devileryCharge: {
+//             type: Number,
+//         },
+//         discount: {
+//             type: Number,
+//         },
+//         totalPriceWithoutTax: {
+//             type: Number,
+//             require: true,
+//         },
+//         totalPriceWithTax: {
+//             type: Number,
+//             require: true,
+//         },

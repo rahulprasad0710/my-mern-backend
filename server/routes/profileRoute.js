@@ -7,46 +7,30 @@ const User = require("../models/userModel");
 //my-info
 
 router.post("/bookmark", async (req, res) => {
+    const existingUserInfo = req.authUser;
+    const { book } = req.body;
+    console.log("book", book);
     try {
-        const existingUserInfo = await User.findOne(
-            { _id: verifiedToken.user },
-            (error, userInfo) => {
-                try {
-                    if (error) console.log(error);
-                    console.log("User Info", userInfo);
-                    return userInfo;
-                } catch (error) {
-                    throw error;
-                }
+        const upadtedBookmark = await User.findByIdAndUpdate(
+            existingUserInfo._id,
+            {
+                $push: {
+                    bookmarks: book,
+                },
             }
         );
 
-        res.status(200).json(existingUserInfo);
+        console.log("upadtedBookmark", upadtedBookmark);
+
+        res.status(200);
     } catch (error) {
         res.status(400);
     }
 });
+
 router.get("/myinfo", async (req, res) => {
+    const existingUserInfo = req.authUser;
     try {
-        const tokenID = req.cookies.tokenID;
-        if (!tokenID) res.status(202).json("cookie not found");
-        console.log(tokenID);
-        const verifiedToken = jwt.verify(tokenID, process.env.JWT_SECRET);
-        console.log(verifiedToken);
-
-        const existingUserInfo = await User.findOne(
-            { _id: verifiedToken.user },
-            (error, userInfo) => {
-                try {
-                    if (error) console.log(error);
-                    console.log("User Info", userInfo);
-                    return userInfo;
-                } catch (error) {
-                    throw error;
-                }
-            }
-        );
-
         res.status(200).json(existingUserInfo);
     } catch (error) {
         res.status(400);
@@ -79,7 +63,24 @@ router.put("/myinfo", async (req, res) => {
     }
 });
 
+//<------------------profile/myaddress------------>
+router.get("/myaddress", async (req, res) => {
+    const existingUserInfo = req.authUser;
+    try {
+        const userAddress = await User.findById(existingUserInfo._id).select(
+            "addresses"
+        );
+
+        res.status(200).json(userAddress);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send(error.message);
+    }
+});
+
 router.post("/myaddress", async (req, res) => {
+    const existingUserInfo = req.authUser;
+    // console.log("userInfofromadd", existingUserInfo);
     try {
         const { addressName, ward, tole, city, district } = req.body;
 
@@ -89,22 +90,30 @@ router.post("/myaddress", async (req, res) => {
                 .json({ errorMsg: "please enter all the fields" });
         }
 
-        const id = "60904eb4824f3259f866fb54";
-        const newAddress = new Address({
-            addressUser: id,
-            addressName,
-            ward,
-            tole,
-            city,
-            district,
-        });
+        // const newAddress = new Address({
+        //     addressName,
+        //     ward,
+        //     tole,
+        //     city,
+        //     district,
+        // });
 
-        const addsaved = await User.findByIdAndUpdate(id, {
-            addresses: [{ newAddress }],
-        });
+        const updatedAddressUser = await User.findByIdAndUpdate(
+            existingUserInfo._id,
+            {
+                $push: {
+                    addresses: {
+                        addressName,
+                        ward,
+                        tole,
+                        city,
+                        district,
+                    },
+                },
+            }
+        );
 
-        const addedAddress = User.populated(addresses);
-        console.log(addedAddress);
+        console.log("updatedAddressUser", updatedAddressUser);
 
         res.status(200).json({ okMsg: "your address is saved" });
     } catch (error) {
@@ -114,21 +123,3 @@ router.post("/myaddress", async (req, res) => {
 });
 
 module.exports = router;
-
-//  const tokenID = req.cookies.tokenID;
-//         if (!tokenID) res.status(202).json("cookie not found");
-//         const verifiedToken = jwt.verify(tokenID, process.env.JWT_SECRET);
-
-//         console.log(verifiedToken);
-
-// const existingUserMobile = await User.findOne(
-//     { _id: verifiedToken.user },
-//     (err, mobileNo) => {
-//         try {
-//             console.log("mobileNo", existingUserMobile);
-//             return email;
-//         } catch (error) {
-//             throw error;
-//         }
-//     }
-// );
