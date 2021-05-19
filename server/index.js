@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 var morgan = require("morgan");
 const authCustomer = require("./middleware/authcustomer");
 // Middeleware
+dotenv.config();
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
@@ -22,7 +23,7 @@ const profileRoute = require("./routes/profileRoute");
 const adminRoute = require("./routes/adminRoute.js");
 const homeRoute = require("./routes/homeRoute.js");
 const testRoute = require("./routes/testRoute.js");
-dotenv.config();
+
 const PORT = process.env.PORTID || 5000;
 
 //Routes

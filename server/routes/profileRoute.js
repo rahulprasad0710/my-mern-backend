@@ -3,7 +3,8 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const Address = require("../models/addressModel");
 const User = require("../models/userModel");
-
+const Order = require("../models/orderModel");
+const OrderItem = require("../models/orderItemModel");
 //my-info
 
 router.post("/bookmark", async (req, res) => {
@@ -76,6 +77,17 @@ router.get("/myaddress", async (req, res) => {
         console.error(error.message);
         res.status(500).send(error.message);
     }
+});
+
+// <---------------User Order ---------------------->
+router.get("/orderhistory", async (req, res) => {
+    const existingUserInfo = req.authUser;
+
+    const userOrderList = await Order.find({ user: existingUserInfo })
+        .populate({ path: "orderItems", populate: "book" })
+        .sort({ dateOrdered: -1 });
+
+    res.status(200).send({ orderHistory: userOrderList });
 });
 
 router.post("/myaddress", async (req, res) => {

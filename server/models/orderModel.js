@@ -14,7 +14,10 @@ const orderSchema = new mongoose.Schema(
                 ref: "OrderItem",
             },
         ],
-
+        status: {
+            type: String,
+            require: true,
+        },
         paymentMethod: {
             type: String,
             require: true,
@@ -24,6 +27,14 @@ const orderSchema = new mongoose.Schema(
             type: Boolean,
             require: true,
             default: false,
+        },
+        totalMRPPrice: {
+            type: Number,
+            require: true,
+        },
+        totalActualPrice: {
+            type: Number,
+            require: true,
         },
     },
     {
