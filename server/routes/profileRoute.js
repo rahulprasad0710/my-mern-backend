@@ -6,8 +6,23 @@ const User = require("../models/userModel");
 const Order = require("../models/orderModel");
 const OrderItem = require("../models/orderItemModel");
 
-//<-------------------my-info------------------------------>
+//<------------------GET METHOD-------get usr bookmarks---------------------->
+router.get("/bookmark", async (req, res) => {
+    const existingUserInfo = req.authUser;
 
+    try {
+        const userBookmarkList = await User.findById(
+            existingUserInfo._id
+        ).populate("bookmarks");
+        console.log(userBookmarkList);
+        res.status(200).json(userBookmarkList);
+    } catch (error) {
+        console.log(error);
+        res.status(400);
+    }
+});
+
+// <--- POST Method-----------------user-profile-bookmark----------------------->
 router.post("/bookmark", async (req, res) => {
     const existingUserInfo = req.authUser;
     const { book } = req.body;
@@ -29,7 +44,7 @@ router.post("/bookmark", async (req, res) => {
         res.status(400);
     }
 });
-
+//<----------GET METHOD---------my-info------------------------------>
 router.get("/myinfo", async (req, res) => {
     const existingUserInfo = req.authUser;
     try {
