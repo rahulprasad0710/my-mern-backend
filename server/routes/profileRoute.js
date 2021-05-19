@@ -5,7 +5,8 @@ const Address = require("../models/addressModel");
 const User = require("../models/userModel");
 const Order = require("../models/orderModel");
 const OrderItem = require("../models/orderItemModel");
-//my-info
+
+//<-------------------my-info------------------------------>
 
 router.post("/bookmark", async (req, res) => {
     const existingUserInfo = req.authUser;
@@ -89,7 +90,7 @@ router.get("/orderhistory", async (req, res) => {
 
     res.status(200).send({ orderHistory: userOrderList });
 });
-
+// <---------------POST user profile address ---------------------->
 router.post("/myaddress", async (req, res) => {
     const existingUserInfo = req.authUser;
     // console.log("userInfofromadd", existingUserInfo);
@@ -99,7 +100,7 @@ router.post("/myaddress", async (req, res) => {
         if (!addressName || !ward || !tole || !city || !district) {
             return res
                 .status(400)
-                .json({ errorMsg: "please enter all the fields" });
+                .json({ message: "please enter all the fields" });
         }
 
         // const newAddress = new Address({
@@ -127,7 +128,7 @@ router.post("/myaddress", async (req, res) => {
 
         console.log("updatedAddressUser", updatedAddressUser);
 
-        res.status(200).json({ okMsg: "your address is saved" });
+        res.status(200).json({ message: "your address is saved" });
     } catch (error) {
         console.error(error.message);
         res.status(500).send(error.message);
